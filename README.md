@@ -4,7 +4,7 @@ A web-based interface for visualizing and analyzing NOAA storm event data. This 
 
 ## 📖 About
 
-This is a **passion project** developed by **Roger** to streamline the analysis of severe weather events. It provides a clean, intuitive interface for meteorologists, researchers, and weather enthusiasts to interact with storm data without needing complex GIS software.
+This is a **passion project** developed by **Me!** to streamline the analysis of severe weather events. It provides a clean, intuitive interface for meteorologists, researchers, and weather enthusiasts to interact with storm data without needing complex GIS software.
 
 ## ✨ Features
 
