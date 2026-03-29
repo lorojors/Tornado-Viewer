@@ -80,7 +80,7 @@ The goal is to evolve Tornado Tracker from a single-session CSV viewer into a fu
 
 ---
 
-### Phase 1 — Foundation & Polish *(Near-term, 1–4 weeks)*
+### Phase 1 — Foundation & Polish *COMPLETED*
 
 Solidify the core experience before layering on complexity.
 
