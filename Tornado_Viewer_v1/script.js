@@ -122,29 +122,31 @@ function applyMapping(){
 // ─── Data loading ─────────────────────────────────────────────────────────────
 function loadData(rows,m){
   const get=(row,f)=>m[f]?row[m[f]]:undefined;
-  const dmgSample=rows.slice(0,200).map(r=>parseFloat(String(get(r,'damage_millions')||'0').replace(/[$,]/g,''))).filter(v=>!isNaN(v)&&v>0);
-  const dmgMedian=dmgSample.length?dmgSample.sort((a,b)=>a-b)[Math.floor(dmgSample.length/2)]:0;
-  const dmgDivisor=dmgMedian>=1000?1e6:1;
 
   allData=rows.map((row,i)=>{
     const slat=parseFloat(get(row,'start_lat')),slon=parseFloat(get(row,'start_lon'));
     if(isNaN(slat)||isNaN(slon))return null;
-    const efRaw=get(row,'ef_scale');
-    const ef=(efRaw!==undefined&&efRaw!=='')?parseInt(efRaw):null;
-    let dmg=parseFloat(String(get(row,'damage_millions')||'0').replace(/[$,]/g,''));
-    if(isNaN(dmg))dmg=0;else dmg=dmg/dmgDivisor;
-    const moRaw=get(row,'mo');
-    const mo=moRaw?parseInt(moRaw):null;
-    // Year: explicit yr column, or parsed from date string
-    const yrRaw=get(row,'yr');
+
+    const yrRaw=get(row,'yr')||get(row,'year');
     let yr=yrRaw?parseInt(yrRaw):null;
     if(!yr){
       const dateStr=get(row,'date')||'';
       const m4=dateStr.match(/\b(\d{4})\b/);
       if(m4)yr=parseInt(m4[1]);
     }
+
+    const currentDivisor=(yr&&yr>=2016)?1e6:1;
+
+    let dmg=parseFloat(String(get(row,'damage_millions')||'0').replace(/[$,]/g,''));
+    if(isNaN(dmg))dmg=0;else dmg=dmg/currentDivisor;
+
+    const efRaw=get(row,'ef_scale');
+    const ef=(efRaw!==undefined&&efRaw!=='')?parseInt(efRaw):null;
+    const moRaw=get(row,'mo');
+    const mo=moRaw?parseInt(moRaw):null;
     const elat=parseFloat(get(row,'end_lat'));
     const elon=parseFloat(get(row,'end_lon'));
+
     return{
       _idx:i,
       id:get(row,'id')||`T-${String(i+1).padStart(4,'0')}`,
@@ -168,6 +170,7 @@ function loadData(rows,m){
   if(!allData.length){alert('No valid coordinate rows found. Please check your lat/lon columns.');return;}
   initDashboard();
 }
+
 
 // ─── Dashboard init ───────────────────────────────────────────────────────────
 function initDashboard(){
@@ -415,7 +418,7 @@ function renderMap(){
   // Build all markers
   if(useClustering){
     clusterGroup=L.markerClusterGroup({
-      maxClusterRadius:60,
+      maxClusterRadius:40,
       minimumClusterSize:6,
       iconCreateFunction(cluster){
         const c=cluster.getChildCount();
@@ -461,7 +464,7 @@ function toggleClustering(){
   // Re-render map layers only (no full re-init)
   if(useClustering){
     clusterGroup=L.markerClusterGroup({
-      maxClusterRadius:60,
+      maxClusterRadius:40,
       minimumClusterSize:6,
       iconCreateFunction(cluster){
         const c=cluster.getChildCount();
