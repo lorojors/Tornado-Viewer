@@ -63,7 +63,7 @@ The app auto-detects these common column names:
 ## 🎨 Design Notes
 
 - Dark theme optimized for extended data analysis sessions
-- EF colors follow NOAA conventions (EF0=Green → EF5=White)
+- EF colors follow NOAA conventions (EF0=Green → EF5=Pink)
 - Monospace fonts for data readability; condensed display fonts for headers
 - Smooth animations and hover states for interactive feedback
 
