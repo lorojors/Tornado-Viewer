@@ -551,28 +551,49 @@ function buildPopup(d){
   </div>`;
 }
 
-// ─── Row selection ────────────────────────────────────────────────────────────
-function selectTornado(idx){
-  selectedRow=idx;
-  const d=allData[idx];if(!d)return;
-  document.querySelectorAll('#tableBody tr').forEach(tr=>tr.classList.remove('selected'));
-  const tr=document.querySelector(`#tableBody tr[data-idx="${idx}"]`);
-  if(tr){tr.classList.add('selected');tr.scrollIntoView({behavior:'smooth',block:'nearest'});}
-  if(map&&!isNaN(d.start_lat)){
-    map.setView([d.start_lat,d.start_lon],10,{animate:true});
+// ─── Export ────────────────────────────────────────────────────────────
+async function exportCSV() {
+  if (!filteredData.length) return;
+
+  let fileName = prompt("Enter file name:", "tornado_export");
+  if (fileName === null) return;
+  if (!fileName.endsWith('.csv')) fileName += '.csv';
+
+  const keys = Object.keys(filteredData[0]).filter(k => !k.startsWith('_'));
+  const csv = [
+    keys.join(','), 
+    ...filteredData.map(d => keys.map(k => JSON.stringify(d[k] ?? '')).join(','))
+  ].join('\n');
+
+  if ('showSaveFilePicker' in window) {
+    try {
+      const handle = await window.showSaveFilePicker({
+        suggestedName: fileName,
+        types: [{
+          description: 'CSV File',
+          accept: { 'text/csv': ['.csv'] },
+        }],
+      });
+      const writable = await handle.createWritable();
+      await writable.write(csv);
+      await writable.close();
+      return;
+    } catch (err) {
+      if (err.name === 'AbortError') return;
+      console.error(err);
+    }
   }
-}
 
-// ─── Export ───────────────────────────────────────────────────────────────────
-function exportCSV(){
-  if(!filteredData.length)return;
-  const keys=Object.keys(filteredData[0]).filter(k=>!k.startsWith('_'));
-  const csv=[keys.join(','),...filteredData.map(d=>keys.map(k=>JSON.stringify(d[k]??'')).join(','))].join('\n');
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
-  a.download='tornado_export.csv';a.click();
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
-
 // ─── Reset ────────────────────────────────────────────────────────────────────
 function resetApp(){
   allData=[];filteredData=[];selectedRow=null;sortCol=null;sortAsc=true;efFilter='ALL';allDates=[];currentPage=0;
