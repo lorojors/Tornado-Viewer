@@ -1,15 +1,15 @@
 :root {
-    --bg-deep: #060a12;
-    --bg-panel: #0b1220;
-    --bg-card: #0f1928;
-    --bg-card2: #131f30;
-    --border: #1a2d45;
-    --border-bright: #2a4a6a;
-    --accent: #00e5ff;
-    --text-primary: #e0eeff;
-    --text-secondary: #7a9ab8;
-    --text-muted: #3a5a78;
-    --radar-green: #00ff88;
+    --bg-deep: #1a1e26;
+    --bg-panel: #2e3843;
+    --bg-card: #353d48;
+    --bg-card2: #3d454f;
+    --border: #6b6d6f;
+    --border-bright: #919191;
+    --accent: #939393;
+    --text-primary: #e8e6e7;
+    --text-secondary: #919191;
+    --text-muted: #6b6d6f;
+    --radar-green: #31c12c;
     --ef0: #4caf50;
     --ef1: #80ecf1;
     --ef2: #eeff00;
@@ -22,17 +22,17 @@
 }
 
 body.light {
-    --bg-deep: #f0f4f8;
-    --bg-panel: #e2e8f0;
-    --bg-card: #d8e0ea;
-    --bg-card2: #cdd7e4;
-    --border: #b0c0d4;
-    --border-bright: #7a9ab8;
-    --accent: #0077aa;
-    --text-primary: #0d1f33;
-    --text-secondary: #2a4a6a;
-    --text-muted: #7a9ab8;
-    --radar-green: #00aa55;
+    --bg-deep: #ede3e4;
+    --bg-panel: #e7dfe8;
+    --bg-card: #e4dee4;
+    --bg-card2: #af9fa5;
+    --border: #92898a;
+    --border-bright: #7a6a6f;
+    --accent: #88797a;
+    --text-primary: #000000;
+    --text-secondary: #8a7a7f;
+    --text-muted: #af9fa5;
+    --radar-green: #31c12c;
 }
 
 /* Theme toggle button */
@@ -54,40 +54,40 @@ body.light {
 
 .theme-toggle:hover {
     border-color: var(--accent);
-    background: rgba(0,119,170,.08);
+    background: rgba(111, 46, 84, .08);
 }
 
 body.light .theme-toggle:hover {
-    background: rgba(0,119,170,.1);
+    background: rgba(61, 45, 46, .1);
 }
 
 /* Light mode map card backgrounds */
 body.light .map-card,
 body.light .time-card {
-    background: rgba(226, 232, 240, .95);
+    background: rgba(231, 223, 232, .95);
 }
 
 /* Light mode popup */
 body.light .leaflet-popup-content-wrapper {
-    background: #e2e8f0 !important;
-    border: 1px solid #7a9ab8 !important;
-    color: #0d1f33 !important;
+    background: #e7dfe8 !important;
+    border: 1px solid #92898a !important;
+    color: #2a1a1b !important;
 }
 
 body.light .leaflet-popup-tip {
-    background: #e2e8f0 !important;
+    background: #e7dfe8 !important;
 }
 
 body.light .leaflet-popup-content {
-    color: #0d1f33 !important;
+    color: #2a1a1b !important;
 }
 
 body.light .popup-item label {
-    color: #7a9ab8 !important;
+    color: #8a7a7f !important;
 }
 
 body.light .popup-item span {
-    color: #0d1f33 !important;
+    color: #2a1a1b !important;
 }
 
 body.light .popup-title {
@@ -96,7 +96,7 @@ body.light .popup-title {
 
 /* Light mode mapper overlay */
 body.light #mapperOverlay {
-    background: rgba(240, 244, 248, .97);
+    background: rgba(237, 227, 228, .97);
 }
 
 /* Light mode scrollbar */
@@ -208,7 +208,7 @@ header {
 .btn:hover {
     border-color: var(--accent);
     color: var(--accent);
-    background: rgba(0, 229, 255, .05);
+    background: rgba(111, 46, 84, .05);
 }
 
 .btn-primary {
@@ -218,8 +218,8 @@ header {
 }
 
 .btn-primary:hover {
-    background: #33eeff;
-    color: #000;
+    background: #b44a82;
+    color: #fff;
 }
 
 .status-dot {
@@ -287,8 +287,8 @@ header {
 .drop-zone:hover,
 .drop-zone.drag-over {
     border-color: var(--accent);
-    background: rgba(0, 229, 255, .03);
-    box-shadow: 0 0 40px rgba(0, 229, 255, .1), inset 0 0 40px rgba(0, 229, 255, .03);
+    background: rgba(111, 46, 84, .03);
+    box-shadow: 0 0 40px rgba(111, 46, 84, .1), inset 0 0 40px rgba(111, 46, 84, .03);
 }
 
 .corner {
@@ -512,7 +512,7 @@ body.light #map {
 
 .map-overlay {
     position: absolute;
-    top: 12px;
+    bottom: 12px;
     left: 12px;
     z-index: 500;
     display: flex;
@@ -796,11 +796,11 @@ tr {
 }
 
 tr:hover td {
-    background: rgba(0, 229, 255, .04);
+    background: rgba(111, 46, 84, .04);
 }
 
 tr.selected td {
-    background: rgba(0, 229, 255, .08) !important;
+    background: rgba(111, 46, 84, .08) !important;
 }
 
 tr.selected {
@@ -1034,11 +1034,11 @@ body.light .date-input {
     font-weight: bold;
     text-align: center;
     border: 2px solid rgba(0,0,0,0.3);
-    box-shadow: 0 0 10px rgba(0,229,255,0.4);
+    box-shadow: 0 0 10px rgba(151, 149, 149, 0.719);
 }
 
 body.light .cluster-icon {
-    box-shadow: 0 0 10px rgba(0,100,150,0.3);
+    box-shadow: 0 0 10px rgb(87, 68, 38);
 }
 
 /* Override Leaflet cluster default styles */
