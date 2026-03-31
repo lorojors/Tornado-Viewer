@@ -93,7 +93,7 @@ Solidify the core experience before layering on complexity.
 
 ---
 
-### Phase 2 — Analytics & Charts *(Short-term, 1–2 months)*
+### Phase 2 — Analytics & Charts *(Mostly implemented, main focus right now is making the UI more user friendly and optimizing performance)*
 
 Turn raw event data into insight without leaving the browser.
 
