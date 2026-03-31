@@ -8,6 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="analytics.css">
 </head>
 <body>
 
@@ -44,6 +45,7 @@
   <div class="header-right">
     <div class="status-dot"></div>
     <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle light/dark mode">☀️</button>
+    <button class="btn" id="analyticsToggleBtn" onclick="A2_togglePanel()">&#9636; Analytics</button>
     <button class="btn" onclick="resetApp()">New File</button>
   </div>
 </header>
@@ -93,6 +95,70 @@
       </div>
     </div>
   </div>
+
+  <!-- ── Phase 2: Analytics Panel ──────────────────────────────────────── -->
+  <div id="analytics-panel">
+    <div class="a2-panel-header">
+      <div class="a2-panel-title">// Analytics</div>
+      <button class="a2-panel-close" onclick="A2_togglePanel()" title="Close">&#x2715;</button>
+    </div>
+    <div class="a2-tabs">
+      <button class="a2-tab-btn active" data-tab="charts"    onclick="A2_switchTab('charts')">Charts</button>
+      <button class="a2-tab-btn"        data-tab="outbreaks" onclick="A2_switchTab('outbreaks')">Outbreaks</button>
+      <button class="a2-tab-btn"        data-tab="trends"    onclick="A2_switchTab('trends')">Trends</button>
+      <button class="a2-tab-btn"        data-tab="compare"   onclick="A2_switchTab('compare')">Compare</button>
+    </div>
+
+    <!-- Charts tab: EF distribution, by-month, top states, fatalities by EF + playback -->
+    <div class="a2-tab-pane active" data-tab="charts">
+      <div class="a2-chart-wrap"><canvas id="chart-ef"></canvas></div>
+      <div class="a2-chart-wrap"><canvas id="chart-month"></canvas></div>
+      <div class="a2-chart-wrap tall"><canvas id="chart-state"></canvas></div>
+      <div class="a2-chart-wrap"><canvas id="chart-fat"></canvas></div>
+      <!-- Playback controls -->
+      <div class="a2-playback-section">
+        <div class="a2-playback-label">// Timeline Playback</div>
+        <div class="a2-playback-date" id="playback-date-label">—</div>
+        <div class="a2-playback-controls">
+          <button class="btn" id="playback-start" onclick="A2_startPlayback()">&#9654; Play</button>
+          <button class="btn" id="playback-stop"  onclick="A2_stopPlayback()" disabled>&#9632; Stop</button>
+          <button class="a2-speed-btn active" data-speed="1"  onclick="A2_setPlaybackSpeed(1)">1&#xD7;</button>
+          <button class="a2-speed-btn"        data-speed="2"  onclick="A2_setPlaybackSpeed(2)">2&#xD7;</button>
+          <button class="a2-speed-btn"        data-speed="4"  onclick="A2_setPlaybackSpeed(4)">4&#xD7;</button>
+          <button class="a2-speed-btn"        data-speed="8"  onclick="A2_setPlaybackSpeed(8)">8&#xD7;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Outbreaks tab: auto-detected outbreak events -->
+    <div class="a2-tab-pane" data-tab="outbreaks">
+      <div id="outbreak-list"><div class="a2-empty">Load data to detect outbreaks.</div></div>
+    </div>
+
+    <!-- Trends tab: year-over-year lines -->
+    <div class="a2-tab-pane" data-tab="trends">
+      <div class="a2-section-label">Events per year</div>
+      <div class="a2-chart-wrap tall"><canvas id="chart-trend"></canvas></div>
+      <div class="a2-section-label">Fatalities per year</div>
+      <div class="a2-chart-wrap tall"><canvas id="chart-trend-fat"></canvas></div>
+      <div class="a2-section-label">Property damage per year ($M)</div>
+      <div class="a2-chart-wrap tall"><canvas id="chart-trend-dmg"></canvas></div>
+    </div>
+
+    <!-- Compare tab: snapshot A vs live filteredData -->
+    <div class="a2-tab-pane" data-tab="compare">
+      <div class="a2-compare-actions">
+        <button class="btn btn-primary" onclick="A2_takeSnapshot()">&#9654; Snapshot A</button>
+        <button class="btn"             onclick="A2_clearSnapshot()">Clear</button>
+      </div>
+      <div class="a2-snapshot-info">
+        <strong>Dataset A:</strong> <span id="compare-snapshot-label">— none —</span>
+      </div>
+      <div id="compare-stats"><div class="a2-empty">Take a snapshot to begin comparison.</div></div>
+      <div class="a2-chart-wrap tall"><canvas id="chart-compare"></canvas></div>
+    </div>
+  </div>
+  <!-- ── /Phase 2 Analytics Panel ───────────────────────────────────────── -->
 
   <div id="data-panel">
     <div class="panel-header">
@@ -146,6 +212,8 @@
     <div class="export-bar" id="exportBar" style="display:none">
       <button class="btn" onclick="exportCSV()" style="flex:1">↓ Export Filtered CSV</button>
       <button class="btn" onclick="fitMapToBounds()">⊹ Fit Map</button>
+      <button class="btn" id="heatmapToggleBtn" onclick="A2_toggleHeatmap()">☾ Heatmap</button>
+      <button class="btn" id="clusterToggleBtn" onclick="toggleClustering()">■ Cluster</button>
     </div>
     <div class="statusbar">
       <div class="statusbar-item">SYS: <span id="sysStatus">READY</span></div>
@@ -160,6 +228,9 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
 <script src="script.js"></script>
+<script src="analytics.js"></script>
 </body>
 </html>
