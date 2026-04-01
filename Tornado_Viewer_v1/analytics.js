@@ -440,17 +440,34 @@ function A2_buildHeatLayer() {
   if (A2.heatLayer) map.removeLayer(A2.heatLayer);
 
   const data = (typeof filteredData !== 'undefined') ? filteredData : [];
-  // Points: [lat, lng, intensity]  — intensity scaled 0–1 from EF (0–5)
+  
+  // Calculate local density for each point: count tornadoes within ~30-40 km radius
+  // Radius ~0.35 degrees ≈ 35-40 km depending on latitude
+  const DENSITY_RADIUS = 0.35;
   const points = data
     .filter(d => !isNaN(d.start_lat) && !isNaN(d.start_lon))
-    .map(d => [d.start_lat, d.start_lon, (d.ef_scale ?? 0) / 5]);
+    .map(d => {
+      // Count nearby tornadoes
+      const nearby = data.filter(other =>
+        Math.abs(other.start_lat - d.start_lat) <= DENSITY_RADIUS &&
+        Math.abs(other.start_lon - d.start_lon) <= DENSITY_RADIUS
+      ).length;
+      
+      // Intensity combines EF value and local density
+      // Normalize: assume average nearby count is 5-10, max is 20+
+      const densityIntensity = Math.min(nearby / 15, 1.0);
+      const efIntensity = Math.pow((d.ef_scale ?? 0) / 5, 1.2);
+      // Weight density more heavily (70%) than EF (30%) for cluster visualization
+      const combined = (densityIntensity * 0.7) + (efIntensity * 0.3);
+      
+      return [d.start_lat, d.start_lon, combined];
+    });
 
   A2.heatLayer = L.heatLayer(points, {
-    radius:  22,
-    blur:    16,
-    maxZoom: 12,
+    radius:  25,
+    blur:    18,
     max:     1.0,
-    gradient: { 0.2: '#4caf50', 0.4: '#eeff00', 0.6: '#f4a836', 0.8: '#b02727', 1.0: '#fa01d0' },
+    gradient: { 0.0: '#4caf50', 0.3: '#80ecf1', 0.5: '#eeff00', 0.7: '#f4a836', 0.9: '#b02727', 1.0: '#fa01d0' },
   }).addTo(map);
 }
 

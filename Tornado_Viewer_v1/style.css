@@ -30,8 +30,8 @@ body.light {
     --border-bright: #7a6a6f;
     --accent: #88797a;
     --text-primary: #000000;
-    --text-secondary: #8a7a7f;
-    --text-muted: #af9fa5;
+    --text-secondary: #857070;
+    --text-muted: #000000;
     --radar-green: #31c12c;
 }
 
@@ -690,6 +690,9 @@ input[type=range]::-webkit-slider-thumb {
     cursor: pointer;
     transition: all .1s;
     color: var(--text-muted);
+}
+.ef-btn:hover {
+  background-color: darkgray;
 }
 
 .ef-btn.active {

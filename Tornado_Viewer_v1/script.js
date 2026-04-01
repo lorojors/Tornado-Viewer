@@ -257,6 +257,17 @@ function clearDateRange(){
   applyFilters();
 }
 
+function clearAllFilters(){
+  document.getElementById('searchInput').value='';
+  document.getElementById('stateFilter').value='';
+  document.getElementById('countyFilter').value='';
+  document.getElementById('monthFilter').value='';
+  document.getElementById('yearFilter').value='';
+  document.getElementById('dateFrom').value='';
+  document.getElementById('dateTo').value='';
+  setEfFilter('ALL',document.querySelector('.ef-btn[data-ef="ALL"]'));
+}
+
 function applyFilters(){
   const search=document.getElementById('searchInput').value.toLowerCase();
   const state=document.getElementById('stateFilter').value;
@@ -377,6 +388,9 @@ function toggleTheme(){
 // Marker layer store for non-clustered mode
 const markerLayerMap={};
 
+// Marker store for direct access by _idx
+const markerMap={};
+
 function buildMarker(d,lonOffset){
   const ef=d.ef_scale??0,color=getEfColor(ef);
   const weight=1.5+(ef*0.7);
@@ -400,6 +414,7 @@ function buildMarker(d,lonOffset){
   const marker=L.marker([d.start_lat,slon],{icon,interactive:true});
   marker.bindPopup(buildPopup(d),{maxWidth:280});
   marker.on('click',()=>selectTornado(d._idx));
+  if(lonOffset===0)markerMap[d._idx]=marker;
   layers.push(marker);
   return layers;
 }
@@ -456,6 +471,7 @@ function clearMapLayers(){
   // Remove any orphan polylines (wrapping copies)
   map.eachLayer(l=>{if(l instanceof L.Polyline&&!(l instanceof L.Polygon))map.removeLayer(l);});
   for(const k in markerLayerMap)delete markerLayerMap[k];
+  for(const k in markerMap)delete markerMap[k];
 }
 
 function toggleClustering(){
@@ -519,6 +535,15 @@ function updateMapVisibility(){
       if(vis.has(i)){if(!map.hasLayer(lg))lg.addTo(map);}
       else{if(map.hasLayer(lg))map.removeLayer(lg);}
     });
+  }
+}
+
+function selectTornado(idx){
+  selectedRow=idx;
+  renderTable();
+  if(map&&markerMap[idx]){
+    map.setView(markerMap[idx].getLatLng(),Math.max(map.getZoom(),13));
+    markerMap[idx].openPopup();
   }
 }
 
