@@ -19,29 +19,53 @@ This is a **passion project** developed by **Roger** to streamline the analysis 
 ## 🚀 Usage
 
 1. **Clone or download** this repository
-2. **Open** `index.html` in a modern web browser
-   > 💡 For best results with local file loading, use a local server (e.g., VS Code Live Server, Python `http.server`)
+2. npm install
+   npm run dev        # → http://localhost:5173
+   npm run build      # production build to dist/
+   npm run typecheck  # tsc --noEmit (no build, just type errors)
 3. **Upload Data**: Drag & drop a CSV file or click to browse
 4. **Map Columns** (if needed): Confirm Latitude/Longitude columns are mapped correctly
 5. **Analyze**: Use filters to isolate events; click table rows to center map on specific storms
 6. **Export**: Download filtered data for reports or further analysis
 
-## 🛠️ Tech Stack
+## Tech stack
 
-- **HTML5** — Semantic structure
-- **CSS3** — Custom variables, Flexbox, animations
-- **JavaScript (Vanilla ES6+)** — No frameworks, pure DOM manipulation
-- **Leaflet.js** — Interactive map rendering
-- **PapaParse** — Robust CSV parsing in-browser
+| Layer     | Choice          | Why                                                           |
+|-----------|-----------------|---------------------------------------------------------------|
+| UI        | React 18        | Component model eliminates manual DOM sync                    |
+| Language  | TypeScript 5    | Full type safety across TornadoEvent, FilterState, all utils  |
+| Build     | Vite 5          | <50ms HMR, native ESM, zero config                           |
+| State     | Zustand 4       | Single store replaces all scattered `let` globals             |
+| Map       | Leaflet (imperative) | react-leaflet conflicts with markercluster + leaflet.heat |
+| Charts    | Chart.js 4      | Managed imperatively via canvas refs + useEffect              |
+| CSV       | PapaParse 5     | Same as before                                                |
+
 
 ## 📁 File Structure
+
 ```
-├──tornado-tracker/
-│   ├── index.html # Main application structure
-│   ├── style.css # All styling (dark theme, animations, layout)
-│   ├── script.js # Core logic: parsing, mapping, filtering, rendering
-│   └── README.md # This file
+src/
+  types/        index.ts              — TornadoEvent, FilterState, all domain types
+  utils/        columns.ts            — COL_ALIASES + detectColumns()
+                parse.ts              — parseRows(), parseDateMs()
+                filter.ts             — pure applyFilters(), applySort()
+                outbreak.ts           — detectOutbreaks() sliding-window algorithm
+                export.ts             — exportFilteredCSV() with File System Access API
+                constants.ts          — EF_COLORS, getEfColor(), PAGE_SIZE, MONTHS
+  store/        index.ts              — Zustand store + all selectors
+  hooks/        useCSVLoader.ts       — PapaParse multi-file hook
+                usePlayback.ts        — timeline playback timer hook
+  components/   App.tsx               — root, screen routing
+                Header.tsx            — logo, stats, theme toggle
+                DropZone.tsx          — file drop + column mapper modal
+                MapView.tsx           — Leaflet map (imperative)
+                FilterPanel.tsx       — all filter controls
+                DataTable.tsx         — paginated sortable table + export bar
+                AnalyticsPanel.tsx    — 4-tab analytics (Charts/Outbreaks/Trends/Compare)
+  styles/       globals.css           — CSS variables + all styles (no CSS modules needed)
+  main.tsx      — ReactDOM.createRoot entry point
 ```
+
 ## 🗂️ Expected CSV Columns
 
 The app auto-detects these common column names:
@@ -59,6 +83,24 @@ The app auto-detects these common column names:
 | Damage | `loss`, `damage_millions`, `damage` |
 
 > ⚠️ **Latitude and Longitude are required** for mapping. Other fields are optional.
+
+## Key architectural decisions
+
+**Why imperative Leaflet instead of react-leaflet?**
+`leaflet.markercluster` and `leaflet.heat` are not aware of React's render cycle.
+Using `react-leaflet` would require writing adapter components for both plugins,
+which is more code and more surface area for bugs than managing Leaflet directly
+in a single `useEffect` inside `MapView.tsx`.
+
+**Why no CSS modules / Tailwind?**
+The existing CSS variable system from v1 works perfectly and carries over directly.
+Adding a CSS preprocessor for a single-page app with ~400 lines of styles is overhead
+without benefit.
+
+**Why Zustand over Redux / Context?**
+The store shape is flat, mutations are synchronous, and there are no complex async
+flows that need middleware. Zustand eliminates 80% of the boilerplate Redux would
+require for the same result.
 
 ## 🎨 Design Notes
 
@@ -134,7 +176,6 @@ Graduate from a local tool to a shared research platform.
 
 ### Guiding Principles
 
-- **No build step, no framework** — Stay as a pure HTML/CSS/JS project for as long as it serves the tool. Reach for a bundler or framework only when complexity demands it.
 - **Privacy first** — All data processing remains in-browser until a hosted backend is explicitly added. No data is sent anywhere without the user's knowledge.
 - **Research-grade accuracy** — Every data transformation (unit detection, damage normalisation, EF parsing) should be transparent and auditable.
 - **Accessible by default** — Keyboard navigation, sufficient colour contrast, and screen-reader-friendly markup should be maintained at every phase.
