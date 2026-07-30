@@ -1,0 +1,177 @@
+IEM CACHE/TILE.PY LAYERS
+=======================
+
+URL TEMPLATE
+------------
+https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/<LAYER>/{z}/{x}/{y}.png
+
+
+NATIONWIDE RADAR LAYERS
+-----------------------
+
+nexrad-n0q-900913
+Description: Digital Base Reflectivity (recommended)
+URL:
+https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/nexrad-n0q-900913/{z}/{x}/{y}.png
+
+nexrad-n0r-900913
+Description: Legacy Base Reflectivity
+URL:
+https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/nexrad-n0r-900913/{z}/{x}/{y}.png
+
+nexrad-ncr-900913
+Description: Composite Reflectivity
+URL:
+https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/nexrad-ncr-900913/{z}/{x}/{y}.png
+
+nexrad-eet-900913
+Description: Echo Tops
+URL:
+https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/nexrad-eet-900913/{z}/{x}/{y}.png
+
+
+GOES SATELLITE LAYERS
+---------------------
+
+goes-vis-1km
+Description: GOES Visible
+https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/goes-vis-1km/{z}/{x}/{y}.png
+
+goes-ir-4km
+Description: GOES Infrared
+https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/goes-ir-4km/{z}/{x}/{y}.png
+
+goes-wv-4km
+Description: GOES Water Vapor
+https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/goes-wv-4km/{z}/{x}/{y}.png
+
+conus-goes-vis-1km
+Description: CONUS GOES Visible
+https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/conus-goes-vis-1km/{z}/{x}/{y}.png
+
+conus-goes-ir-4km
+Description: CONUS GOES Infrared
+https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/conus-goes-ir-4km/{z}/{x}/{y}.png
+
+conus-goes-wv-4km
+Description: CONUS GOES Water Vapor
+https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/conus-goes-wv-4km/{z}/{x}/{y}.png
+
+
+BOUNDARIES
+----------
+
+usstates
+Description: US States
+https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/usstates/{z}/{x}/{y}.png
+
+uscounties
+Description: US Counties
+https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/uscounties/{z}/{x}/{y}.png
+
+
+RIDGE (PER-RADAR) PRODUCTS
+==========================
+
+URL TEMPLATE
+------------
+https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/ridge::<RADAR>-<PRODUCT>-0/{z}/{x}/{y}.png
+
+Replace <RADAR> with a radar ID such as:
+KTLX
+KDGX
+KAMX
+KLOT
+KGRR
+KBMX
+KHGX
+KMLB
+etc.
+
+AVAILABLE PRODUCTS
+------------------
+
+N0Q
+Digital Base Reflectivity
+
+N0R
+Legacy Base Reflectivity
+
+N0U
+Base Velocity
+
+N0S
+Storm Relative Velocity
+
+NSW
+Spectrum Width
+
+NCR
+Composite Reflectivity
+
+N0X
+Differential Reflectivity (ZDR)
+
+N0C
+Correlation Coefficient (CC)
+
+N0K
+Specific Differential Phase (KDP)
+
+N0H
+Differential Phase (PhiDP)
+
+N0M
+Hydrometeor Classification (HCA)
+
+
+EXAMPLES
+--------
+
+Reflectivity
+https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/ridge::KTLX-N0Q-0/{z}/{x}/{y}.png
+
+Velocity
+https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/ridge::KTLX-N0U-0/{z}/{x}/{y}.png
+
+Storm Relative Velocity
+https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/ridge::KTLX-N0S-0/{z}/{x}/{y}.png
+
+Spectrum Width
+https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/ridge::KTLX-NSW-0/{z}/{x}/{y}.png
+
+Differential Reflectivity
+https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/ridge::KTLX-N0X-0/{z}/{x}/{y}.png
+
+Correlation Coefficient
+https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/ridge::KTLX-N0C-0/{z}/{x}/{y}.png
+
+Specific Differential Phase
+https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/ridge::KTLX-N0K-0/{z}/{x}/{y}.png
+
+Differential Phase
+https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/ridge::KTLX-N0H-0/{z}/{x}/{y}.png
+
+Hydrometeor Classification
+https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/ridge::KTLX-N0M-0/{z}/{x}/{y}.png
+
+
+NOT AVAILABLE AS NATIONWIDE CACHE/TILE.PY LAYERS
+================================================
+
+These are ONLY available through the RIDGE per-radar URLs:
+
+- Base Velocity
+- Storm Relative Velocity
+- Spectrum Width
+- Differential Reflectivity (ZDR)
+- Correlation Coefficient (CC)
+- Specific Differential Phase (KDP)
+- Differential Phase (PhiDP)
+- Hydrometeor Classification (HCA)
+
+They cannot be accessed using:
+
+https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/nexrad-...
+
+because they are radar-specific products.
